@@ -2,6 +2,7 @@ package xiaoshi.dao;
 import xiaoshi.db.DbClose;
 import xiaoshi.db.DbConn;
 import xiaoshi.entity.Goods;
+import xiaoshi.tools.ScannerChoice;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -132,9 +133,73 @@ public final class GoodsDao {
                     DbClose.queryClose(pstmt,conn,rs);
                 }
                 break;
-            case 2://
+            case 2://items by ascending price
+                String sqlPrice="SELECT * FROM JAVA.GOODS ORDER BY GPRICE";
+                try{
+                    pstmt=conn.prepareStatement(sqlPrice);
+                    rs=pstmt.executeQuery();
+                    while(rs.next()){
+                        int gid=rs.getInt("gid");
+                        String gname=rs.getString("gname");
+                        double gprice=rs.getDouble("gprice");
+                        int gnum=rs.getInt("gnum");
+                        String pname=rs.getString("prod_name");
+                        list.add(new Goods(gid,gprice,gnum,gname,pname));
+                    }
+                }catch (SQLException e){
+                    e.printStackTrace();
+                }finally{
+                    DbClose.queryClose(pstmt,conn,rs);
+                }
+                break;
+            case 3:
+                String nameGet= ScannerChoice.ScannerInfoString();
+                String sqlGname="SELECT * FROM JAVA.GOODS LIKE '%||?||%'";
+                try{
+                    pstmt=conn.prepareStatement(sqlGname);
+                    pstmt.setString(1,nameGet);
+                    rs=pstmt.executeQuery();
+                    while(rs.next()){
+                        int gid=rs.getInt("gid");
+                        String gname=rs.getString("gname");
+                        double gprice=rs.getDouble("gprice");
+                        int gnum=rs.getInt("gnum");
+                        String pname=rs.getString("prod_name");
+                        list.add(new Goods(gid,gprice,gnum,gname,pname));
+                    }
+                }catch (SQLException e){
+                    e.printStackTrace();
+                }finally{
+                    DbClose.queryClose(pstmt,conn,rs);
+                }
+                break;
+            default:
+                break;
         }
         return list;
+    }
+    public List<Goods> displayGoods(){
+        List<Goods> list=new ArrayList<>();
+        conn=DbConn.getconn();
+        String sql="SELECT * FROM JAVA.GOODS";
+
+        try{
+            pstmt=conn.prepareStatement(sql);
+            rs=pstmt.executeQuery();
+            while(rs.next()){
+                int gid=rs.getInt("gid");
+                String gname=rs.getString("gname");
+                double gprice=rs.getDouble("gprice");
+                int gnum=rs.getInt("gnum");
+                String pname=rs.getString("prod_name");
+                list.add(new Goods(gid,gprice,gnum,gname,pname));
+            }
+        }catch (SQLException e){
+            e.printStackTrace();
+        }finally{
+            DbClose.queryClose(pstmt,conn,rs);
+        }
+    return list;
     }
 
 

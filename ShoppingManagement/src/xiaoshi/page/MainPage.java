@@ -130,7 +130,7 @@ public final class MainPage extends ScannerChoice {
                                 SalesMan salesMan = list.get(0);
                                 if(pswd.equals(salesMan.getsPassword())){
                                     System.out.println("\t login succeed");
-                                    shoppingSettlementPage(salesMan.getSId());
+                                    shoppingSettlementPage(salesMan.getsId());
                                     break;
                                 }else{
                                     System.err.println("\t INVALID PASSWORD\n");
