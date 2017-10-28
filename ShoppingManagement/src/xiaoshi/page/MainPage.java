@@ -1,9 +1,13 @@
 package xiaoshi.page;
 
 import xiaoshi.dao.SalesManDao;
+import xiaoshi.entity.Goods;
+import xiaoshi.entity.Gsales;
 import xiaoshi.entity.SalesMan;
+import xiaoshi.tools.QueryPrint;
 import xiaoshi.tools.ScannerChoice;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -189,7 +193,58 @@ public final class MainPage extends ScannerChoice {
                 if(input.equals("0"))checkstandLogPage();
                 else if(input.equals("S")||input.equals("s")){
                     System.out.println("\nEnter Key Word of Item");
-                    int gid
+                    int gid= QueryPrint.querySettlement();
+                    switch(gid){
+                        case -3://no such item
+                            break;
+                        case -1:
+                            System.err.println("SORRY, THIS ITEM SOLD OUT");
+                            break;
+                        default:
+                            System.out.println("Select item by ID");
+                            int id=ScannerNum();
+                            ArrayList<Goods> goodsList = new QueryPrint().queryGoodsKey(id,null);
+                            if(goodsList==null||goodsList.size()==0)System.out.println("iTEM NOT FOUND");
+                            else{
+                                Goods goods = goodsList.get(0);
+                                int gnum=goods.getGnum();
+                                double price = goods.getGprice();
+                                System.out.println("Enter Quantity:");
+                                do{
+                                    int q=ScannerNum();
+                                    if(q>gnum)System.out.println("STOKE INSUFFICIENT");
+                                    else{
+                                        double total=Arith.mul(gnum,price);
+                                        System.out.println("\t\t\tShoppint Cart:\n");
+                                        System.out.println("\t\tName\tPrice\tQuantity\tTotal");
+                                        System.out.println("\t\t"+goods.getGname()+"\t"+goods.getGprice()+"$\t"+q+"\t"+total+"$\t");
+                                        do{
+                                            System.out.println("Confirm: Y/N");
+                                            String confirm=ScannerInfoString();
+                                            if(confirm.equals("y")||confirm.equals("Y")){
+                                                double amount=ScannerInfo();
+                                                double balance=Arith.sub(amount,total);
+                                                if(balance<0){
+                                                    System.err.println("INSUFFICIENT BALANCE");
+                                                    System.out.println("\nINPUT AGAIN");
+                                                }
+                                                else{
+                                                    //manipulate sales table
+                                                    Gsales gSales=new Gsales(goods.getGid(),salsManId,q);
+                                                    boolean insert = new GsalesDao().shoppingSettlement(gSales);
+                                                    //manipulate goods table
+                                                    int gn=gnum-q;
+                                                    Goods newGoods=new Goods(goods.getGid(),gn);
+
+
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+                    }
                 }
             }
     }
