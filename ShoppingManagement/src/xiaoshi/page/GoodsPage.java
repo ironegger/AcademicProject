@@ -2,6 +2,7 @@ package xiaoshi.page;
 
 import xiaoshi.dao.GoodsDao;
 import xiaoshi.entity.Goods;
+import xiaoshi.tools.QueryPrint;
 import xiaoshi.tools.ScannerChoice;
 
 
