@@ -1,5 +1,7 @@
 package xiaoshi.page;
 
+import xiaoshi.dao.GoodsDao;
+import xiaoshi.dao.GsalesDao;
 import xiaoshi.dao.SalesManDao;
 import xiaoshi.entity.Goods;
 import xiaoshi.entity.Gsales;
@@ -81,7 +83,7 @@ public final class MainPage extends ScannerChoice {
                     GoodsPage.upateGoodsPage();
                     break;
                 case 3:
-                    GoodsPage.delefeGoodsPage();
+                    GoodsPage.deleteGoodsPage();
                     break;
                 case 4:
                     GoodsPage.queryGoodsPage();
@@ -235,11 +237,15 @@ public final class MainPage extends ScannerChoice {
                                                     //manipulate goods table
                                                     int gn=gnum-q;
                                                     Goods newGoods=new Goods(goods.getGid(),gn);
-
-
+                                                    boolean update=new GoodsDao().updateGoods(3,newGoods);
+                                                    if(update&&insert){
+                                                        System.out.println("Cash Back: "+balance);
+                                                        System.out.println("\nThanks for your purchase!\n");
+                                                    }else{System.err.println("ERROR!");}
+                                                    shoppingSettlementPage(salsManId);
                                                 }
                                             }
-                                        }
+                                        }while(true);
                                     }
                                 }
                             }
